@@ -1,0 +1,38 @@
+[
+{
+  "directory": "/home/nickorlow/programming/personal/razzle/build",
+  "command": "i386-elf-gcc   -ffreestanding -g -Wall -Wextra -mgeneral-regs-only -DARCH_I386 -std=gnu99 -o CMakeFiles/kernel.elf.dir/kernel/kernel.c.o -c /home/nickorlow/programming/personal/razzle/kernel/kernel.c",
+  "file": "/home/nickorlow/programming/personal/razzle/kernel/kernel.c",
+  "output": "CMakeFiles/kernel.elf.dir/kernel/kernel.c.o"
+},
+{
+  "directory": "/home/nickorlow/programming/personal/razzle/build",
+  "command": "i386-elf-as   -g -o CMakeFiles/kernel.elf.dir/arch/i386/idt.s.o -c /home/nickorlow/programming/personal/razzle/arch/i386/idt.s",
+  "file": "/home/nickorlow/programming/personal/razzle/arch/i386/idt.s",
+  "output": "CMakeFiles/kernel.elf.dir/arch/i386/idt.s.o"
+},
+{
+  "directory": "/home/nickorlow/programming/personal/razzle/build",
+  "command": "i386-elf-as   -g -o CMakeFiles/kernel.elf.dir/arch/i386/irq.s.o -c /home/nickorlow/programming/personal/razzle/arch/i386/irq.s",
+  "file": "/home/nickorlow/programming/personal/razzle/arch/i386/irq.s",
+  "output": "CMakeFiles/kernel.elf.dir/arch/i386/irq.s.o"
+},
+{
+  "directory": "/home/nickorlow/programming/personal/razzle/build",
+  "command": "i386-elf-as   -g -o CMakeFiles/kernel.elf.dir/arch/i386/isr.s.o -c /home/nickorlow/programming/personal/razzle/arch/i386/isr.s",
+  "file": "/home/nickorlow/programming/personal/razzle/arch/i386/isr.s",
+  "output": "CMakeFiles/kernel.elf.dir/arch/i386/isr.s.o"
+},
+{
+  "directory": "/home/nickorlow/programming/personal/razzle/build",
+  "command": "i386-elf-as   -g -o CMakeFiles/kernel.elf.dir/arch/i386/loader.s.o -c /home/nickorlow/programming/personal/razzle/arch/i386/loader.s",
+  "file": "/home/nickorlow/programming/personal/razzle/arch/i386/loader.s",
+  "output": "CMakeFiles/kernel.elf.dir/arch/i386/loader.s.o"
+},
+{
+  "directory": "/home/nickorlow/programming/personal/razzle/build",
+  "command": "i386-elf-as   -g -o CMakeFiles/kernel.elf.dir/arch/i386/tss.s.o -c /home/nickorlow/programming/personal/razzle/arch/i386/tss.s",
+  "file": "/home/nickorlow/programming/personal/razzle/arch/i386/tss.s",
+  "output": "CMakeFiles/kernel.elf.dir/arch/i386/tss.s.o"
+}
+]
