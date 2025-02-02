@@ -1,5 +1,6 @@
 #include "./scheduler.c"
 #include "./vga.c"
+#include "./rsdp.c"
 #include <stdint.h>
 
 #include "./test_processes.c"
@@ -13,7 +14,10 @@ int kernel_main() {
 
   outb(0x3D4, 0x0A);
   outb(0x3D5, 0x20);
+  
 
+  find_rsdp();
+  for(;;){}
   clear_screen();
 
   interrupt_disable();

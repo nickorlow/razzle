@@ -41,6 +41,6 @@ add_custom_command(OUTPUT os.iso
 )
 
 # Run & Debug targets 
-add_custom_target(run COMMAND qemu-system-i386 -boot d -cdrom os.iso -m 512 -machine type=pc-i440fx-3.1 -monitor stdio DEPENDS os.iso)
-add_custom_target(debug COMMAND ./debug.sh DEPENDS os.iso)
+add_custom_target(run COMMAND qemu-system-i386 -boot d -cdrom os.iso -m 512 -machine type=pc-i440fx-3.1 -monitor stdio -drive id=disk,file=/dev/null,if=none -device ahci,id=ahci -device ide-hd,drive=disk,bus=ahci.0 DEPENDS os.iso)
+add_custom_target(debug COMMAND ../debug.sh DEPENDS os.iso)
 
