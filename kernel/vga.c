@@ -1,6 +1,7 @@
 #pragma once
 
 #include "./spin_lock.c"
+#include "./drivers/serial.c"
 #include <stdarg.h>
 #include <stdint.h>
 
@@ -36,6 +37,7 @@ void putc(char c) {
     }
     row = (row + 1) % HEIGHT;
     col = 0;
+    serial_tx('\n');
     return;
   }
 
@@ -43,12 +45,15 @@ void putc(char c) {
     col--;
     vram[(row * WIDTH * 2) + (col * 2)] = ' ';
     vram[(row * WIDTH * 2) + (col * 2 + 1)] = color_code;
+    serial_tx('\b');
     return;
   }
 
   vram[(row * WIDTH * 2) + (col * 2)] = c;
   vram[(row * WIDTH * 2) + (col * 2 + 1)] = color_code;
   col++;
+
+  serial_tx(c);
 }
 
 void print_uint(unsigned int x, uint8_t base) {
@@ -79,13 +84,18 @@ void print_int(int x, uint8_t base) {
   }
 }
 
-void print_hex(int x) {
+void print_hex(uint32_t x) {
   putc('0');
   putc('x');
 
+  uint8_t fp = 1;
+
   do {
-    unsigned int digit = (x & 0xF0000000) >> 28;
-    putc((digit < 10) ? (digit + '0') : (digit - 10 + 'A'));
+    uint32_t digit = (x & 0xF0000000) >> 28;
+    if (digit != 0 || !fp || x == 0) {
+        putc((digit < 10) ? (digit + '0') : (digit - 10 + 'A'));
+        fp = 0;
+    }
     x <<= 4;
   } while (x != 0);
 }

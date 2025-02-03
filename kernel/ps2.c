@@ -258,6 +258,18 @@ void init_ps2() {
     }
 }
 
+void handle_keypress_char(char c) {
+                if (c != '\0') {
+              for(uint32_t i = 0; i < MAX_PROCESSES; i++) {
+                  if(ps2_waiters[i].alloc) {
+                      process_table[ps2_waiters[i].pid].registers.eax = c;
+                      ps2_waiters[i].alloc = 0;
+                      process_table[ps2_waiters[i].pid].state = TASKSTATE_ready;
+                  }
+              }
+                }
+}
+
 void handle_keypress(uint8_t char_code) {
   struct key_event_t event;
   if ((char_code & 0b11000000) == 0b10000000) {
@@ -286,15 +298,7 @@ void handle_keypress(uint8_t char_code) {
   default: {
             if (event.is_down) {
                 char c = keycode_to_char(event.key);
-                if (c != '\0') {
-              for(uint32_t i = 0; i < MAX_PROCESSES; i++) {
-                  if(ps2_waiters[i].alloc) {
-                      process_table[ps2_waiters[i].pid].registers.eax = c;
-                      ps2_waiters[i].alloc = 0;
-                      process_table[ps2_waiters[i].pid].state = TASKSTATE_ready;
-                  }
-              }
-                }
+                handle_keypress_char(c);
             }
             break;
            }

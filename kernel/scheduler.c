@@ -14,6 +14,7 @@
 enum task_state_t { TASKSTATE_unused, TASKSTATE_ready, TASKSTATE_blocked };
 
 struct task_struct {
+  uint32_t pid;
   enum task_state_t state;
   struct regs registers;
   unsigned int address_base;
@@ -59,6 +60,7 @@ void start_process(char *name, char *entrypoint) {
   process_table[pid].allocd_addr = (char *)process_table[pid].address_base;
   process_table[pid].state = TASKSTATE_ready;
   process_table[pid].process_name = balloc_pid(16, pid);
+  process_table[pid].pid = pid;
   strncpy(name, process_table[pid].process_name, 16);
 
   initialize_registers(&process_table[pid].registers, entrypoint,

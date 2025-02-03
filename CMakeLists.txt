@@ -32,7 +32,7 @@ if (ARCH STREQUAL "i386")
 endif()
 
 add_executable(kernel.elf ${SOURCES} ${ASM_SOURCES})
-set_target_properties(kernel.elf PROPERTIES LINK_FLAGS "-T ${LINKER_SCRIPT} -ffreestanding -O2 -nostdlib -lgcc -g ${ARCH_FLAG}")
+set_target_properties(kernel.elf PROPERTIES LINK_FLAGS "-T ${LINKER_SCRIPT} -ffreestanding -O2 -nostdlib -lgcc -g ${ARCH_FLAG}" DEPENDS pci_supp)
 add_custom_command(OUTPUT os.iso
     COMMAND cp kernel.elf ../iso/boot/kernel.elf
     COMMAND genisoimage -R -b boot/grub/stage2_eltorito -no-emul-boot -boot-load-size 4 -A os -input-charset utf8 -quiet -boot-info-table -o os.iso ../iso
@@ -40,7 +40,13 @@ add_custom_command(OUTPUT os.iso
     COMMENT "Generating OS ISO"
 )
 
+add_custom_target(pci_supp
+    COMMAND xxd -i ../build_supp/pci/pci.ids > ../kernel/pci_supp.c
+    COMMENT "Generating Supplemental PCI data"
+)
+
+
 # Run & Debug targets 
-add_custom_target(run COMMAND qemu-system-i386 -boot d -cdrom os.iso -m 512 -machine type=pc-i440fx-3.1 -monitor stdio -drive id=disk,file=/dev/null,if=none -device ahci,id=ahci -device ide-hd,drive=disk,bus=ahci.0 DEPENDS os.iso)
+add_custom_target(run COMMAND qemu-system-i386 -boot d -m 512 -machine type=pc-i440fx-3.1 -serial stdio -device piix3-ide,id=ide -drive id=disk,file=/dev/null,format=raw,if=none -device ide-hd,drive=disk,bus=ide.1 -device ide-cd,drive=cdrom -drive id=cdrom,file=os.iso,media=cdrom,if=none DEPENDS os.iso)
 add_custom_target(debug COMMAND ../debug.sh DEPENDS os.iso)
 

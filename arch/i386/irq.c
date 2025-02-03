@@ -10,6 +10,7 @@ enum irq_code_t {
   IRQCODE_PIT = 32,
   IRQCODE_PS2 = 33,
   IRQCODE_SYSCALL = 128,
+  IRQCODE_COM1 = 36,
 };
 
 void kb_handler() {
@@ -67,6 +68,13 @@ void irq_handler(struct regs *r) {
 
   case IRQCODE_PS2: {
     kb_handler();
+    break;
+  };
+  case IRQCODE_COM1: {
+    char c = serial_rx();
+    c = c == '\r' ? '\n' : c;
+    c = c == 127 ? '\b' : c;
+    handle_keypress_char(c);
     break;
   };
   }

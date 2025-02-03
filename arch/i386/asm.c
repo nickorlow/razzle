@@ -27,6 +27,16 @@ static inline unsigned char inb(int port) {
   return val;
 }
 
+static inline void outl(uint32_t port, uint32_t val) {
+  __asm__ volatile("outl %k0, %k1" : : "a"(val), "Nd"(port) : "memory");
+}
+
+static inline uint32_t inl(uint32_t port) {
+  uint32_t val;
+  __asm__ volatile("inl %k1, %k0" : "=a"(val) : "Nd"(port) : "memory");
+  return val;
+}
+
 static inline void interrupt_disable() { __asm__ volatile("cli"); }
 
 static inline void interrupt_enable() { __asm__ volatile("sti"); }
