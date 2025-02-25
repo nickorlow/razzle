@@ -24,9 +24,9 @@ FILE(GLOB SOURCES kernel/kernel.c)
 
 # Architecture Specific Files
 if (ARCH STREQUAL "i386")
-    set(CMAKE_C_COMPILER i386-elf-gcc)
-    set(CMAKE_ASM_COMPILER i386-elf-as)
-    set(LD i386-elf-gcc)
+    set(CMAKE_C_COMPILER i686-elf-gcc)
+    set(CMAKE_ASM_COMPILER i686-elf-as)
+    set(LD i686-elf-gcc)
     FILE(GLOB ASM_SOURCES arch/i386/*.s)
     SET(ARCH_FLAG "-DARCH_I386")
 endif()

@@ -1,3 +1,4 @@
 .cache/
 build/
 iso/boot/kernel.elf
+.direnv/
