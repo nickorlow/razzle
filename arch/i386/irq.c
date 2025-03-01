@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../kernel/ps2.c"
-#include "../../kernel/syscall.c"
-#include "./asm.c"
+#include "../../kernel/drivers/ps2/ps2.h"
+#include "../../kernel/syscall/syscall.h"
+#include "./asm/asm.c"
 #include "./idt.c"
 #include "handlers.h"
 
@@ -79,11 +79,11 @@ void irq_handler(struct regs *r) {
   };
   }
 
-  // Send EOI to follower controller 
+  // Send EOI to follower controller
   if (r->int_no >= 40 && r->int_no < 48) {
     outb(0xA0, 0x20);
   }
 
-  // Send EOI to leader controller 
+  // Send EOI to leader controller
   outb(0x20, 0x20);
 }

@@ -1,58 +1,12 @@
-#pragma once
-
-#include "./spin_lock.c"
-#include "./drivers/serial.c"
-#include <stdarg.h>
+#include "io.h"
+#include "../drivers/serial/serial.h"
+#include "../drivers/vga/vga.h"
 #include <stdint.h>
 
-#define WIDTH 80
-#define HEIGHT 25
-
-static uint8_t col = 0;
-static uint8_t row = 0;
-static uint8_t color_code = 10;
-static char *vram = (char *)0xb8000;
-
-void clear_screen() {
-  for (int i = 0; i < HEIGHT - 1; i++) {
-    for (int j = 0; j < WIDTH; j++) {
-      vram[(i * WIDTH * 2) + (j * 2)] = 0;
-      // vram[(i * WIDTH * 2) + (j*2 + 1)] = 0;
-    }
-  }
-  row = 0;
-  col = 0;
-}
+#include "../spin_lock.h"
 
 void putc(char c) {
-  if (col == WIDTH) {
-    row = (row + 1) % HEIGHT;
-    col = 0;
-  }
-
-  if (c == '\n') {
-    for (int i = col; i < WIDTH; i++) {
-      vram[(row * WIDTH * 2) + (i * 2)] = ' ';
-      vram[(row * WIDTH * 2) + (i * 2 + 1)] = color_code;
-    }
-    row = (row + 1) % HEIGHT;
-    col = 0;
-    serial_tx('\n');
-    return;
-  }
-
-  if (c == '\b') {
-    col--;
-    vram[(row * WIDTH * 2) + (col * 2)] = ' ';
-    vram[(row * WIDTH * 2) + (col * 2 + 1)] = color_code;
-    serial_tx('\b');
-    return;
-  }
-
-  vram[(row * WIDTH * 2) + (col * 2)] = c;
-  vram[(row * WIDTH * 2) + (col * 2 + 1)] = color_code;
-  col++;
-
+  VGA_putc(c);
   serial_tx(c);
 }
 
@@ -93,8 +47,8 @@ void print_hex(uint32_t x) {
   do {
     uint32_t digit = (x & 0xF0000000) >> 28;
     if (digit != 0 || !fp || x == 0) {
-        putc((digit < 10) ? (digit + '0') : (digit - 10 + 'A'));
-        fp = 0;
+      putc((digit < 10) ? (digit + '0') : (digit - 10 + 'A'));
+      fp = 0;
     }
     x <<= 4;
   } while (x != 0);
@@ -150,6 +104,7 @@ void printf_base(char *str, va_list list) {
       putc(str[i]);
     }
   }
+  VGA_flush();
 }
 
 void printf_nolock(char *str, ...) {

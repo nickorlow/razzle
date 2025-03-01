@@ -9,13 +9,8 @@ struct regs {
   unsigned int eip, cs, eflags, useresp, ss;
 };
 
-void __sl_acquire(uint32_t *lock_id) {
-  __asm__("retry_lock: lock bts $0,(%0); pause; jc retry_lock" : "+g"(lock_id));
-}
-
-void __sl_release(uint32_t *lock_id) {
-  __asm__("lock btr $0, (%0)" : "+g"(lock_id));
-}
+void __sl_acquire(uint32_t *);
+void __sl_release(uint32_t *);
 
 static inline void outb(int port, int val) {
   __asm__ volatile("outb %b0, %w1" : : "a"(val), "Nd"(port) : "memory");
@@ -34,6 +29,16 @@ static inline void outl(uint32_t port, uint32_t val) {
 static inline uint32_t inl(uint32_t port) {
   uint32_t val;
   __asm__ volatile("inl %k1, %k0" : "=a"(val) : "Nd"(port) : "memory");
+  return val;
+}
+
+static inline void outw(uint16_t port, uint16_t val) {
+  __asm__ volatile("outw %w0, %w1" : : "a"(val), "Nd"(port) : "memory");
+}
+
+static inline uint16_t inw(uint16_t port) {
+  uint32_t val;
+  __asm__ volatile("inw %w1, %w0" : "=a"(val) : "Nd"(port) : "memory");
   return val;
 }
 

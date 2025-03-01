@@ -1,14 +1,14 @@
 #pragma once
 
-#include "../../kernel/memory.c"
+#include "../../kernel/memory/memory.h"
 #include "./handlers.h"
 #include "gdt.c"
 
 struct idt_row_t {
   uint16_t base_lo;
   uint16_t sel;
-  uint8_t unset;
-  uint8_t flags;
+  uint8_t  unset;
+  uint8_t  flags;
   uint16_t base_hi;
 } __attribute__((packed));
 
@@ -26,7 +26,8 @@ enum idt_flag_t {
   IDTFLAG_INTERRUPT = 0b00001110,
 };
 
-#define KERNEL_INTERRUPT_FLAG (IDTFLAG_PRESENT | IDTFLAG_DPL_KERNEL | IDTFLAG_INTERRUPT)
+#define KERNEL_INTERRUPT_FLAG                                                  \
+  (IDTFLAG_PRESENT | IDTFLAG_DPL_KERNEL | IDTFLAG_INTERRUPT)
 #define USER_TRAP_FLAG (IDTFLAG_PRESENT | IDTFLAG_DPL_USER | IDTFLAG_INTERRUPT)
 
 #define IDT_SIZE (256)

@@ -1,28 +1,14 @@
-#pragma once
-#include "./pci_supp.c"
-#include "vga.c"
-#include <stdint.h>
+#include "./pci.h"
+#include "../../supp/pci_supp.c"
+#include "../io/io.h"
+#include "../memory/memory.h"
 
 #ifdef ARCH_I386
-#include "../arch/i386/asm.c"
+#include "../../arch/i386/asm/asm.h"
 #endif
 
-#define PCI_NO_VENDOR (0xFFFF)
-#define PCI_MAX_NAMESIZE (128)
-#define PCI_MAX_DEVICES (256)
-
-struct pci_device {
-  uint16_t device_id;
-  uint16_t vendor_id;
-  char device_name[PCI_MAX_NAMESIZE];
-  char vendor_name[PCI_MAX_NAMESIZE];
-  uint32_t bar[6];
-  uint8_t class_code;
-  uint8_t subclass_code;
-};
-
-static struct pci_device pci_devices_list[PCI_MAX_DEVICES];
-static uint32_t pci_devices_count;
+struct pci_device pci_devices_list[PCI_MAX_DEVICES];
+uint32_t          pci_devices_count;
 
 uint16_t pci_read_config(uint8_t bus, uint8_t slot, uint8_t function,
                          uint8_t offset) {
@@ -60,10 +46,10 @@ uint32_t ascii_byte_to_num(char c) {
 
 void pci_get_vendor_dev_name(uint16_t vendor_id, uint16_t device_id,
                              char *vendor_name, char *device_name) {
-  int len = ___build_supp_pci_pci_ids_len;
+  int            len = ___build_supp_pci_pci_ids_len;
   unsigned char *buf = &___build_supp_pci_pci_ids[0];
-  int pps = PPS_NUM_1;
-  int ppss = PPSS_VENDOR;
+  int            pps = PPS_NUM_1;
+  int            ppss = PPSS_VENDOR;
 
   int j = 0;
 

@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #include "./gdt.c"
 #include "./idt.c"

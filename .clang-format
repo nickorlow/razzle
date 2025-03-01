@@ -1,0 +1,8 @@
+---
+BasedOnStyle: LLVM
+AlignAfterOpenBracket: Align
+AlignConsecutiveDeclarations: 'true'
+AlignTrailingComments: 'true'
+DisableFormat: 'false'
+
+...

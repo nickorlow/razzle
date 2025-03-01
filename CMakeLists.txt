@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
+set(CMAKE_C_COMPILER_WORKS 1) # todo: find the proper fix for this, rn this is 
+# b/c cmake expects libc to be avaliable and it's not under nixos
 
 project(razzle C ASM)
 
@@ -20,7 +22,7 @@ set(CMAKE_ASM_FLAGS "-g")
 set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/linker.ld)
 
 # Common source files
-FILE(GLOB SOURCES kernel/kernel.c)
+FILE(GLOB_RECURSE SOURCES kernel/*.c)
 
 # Architecture Specific Files
 if (ARCH STREQUAL "i386")
@@ -40,13 +42,15 @@ add_custom_command(OUTPUT os.iso
     COMMENT "Generating OS ISO"
 )
 
+# Supplemental PCI data to be loaded into memory
 add_custom_target(pci_supp
-    COMMAND xxd -i ../build_supp/pci/pci.ids > ../kernel/pci_supp.c
+    COMMAND xxd -i ../build_supp/pci/pci.ids > ../supp/pci_supp.c
     COMMENT "Generating Supplemental PCI data"
 )
 
-
 # Run & Debug targets 
-add_custom_target(run COMMAND qemu-system-i386 -boot d -m 512 -machine type=pc-i440fx-3.1 -serial stdio -device piix3-ide,id=ide -drive id=disk,file=/dev/null,format=raw,if=none -device ide-hd,drive=disk,bus=ide.1 -device ide-cd,drive=cdrom -drive id=cdrom,file=os.iso,media=cdrom,if=none DEPENDS os.iso)
+add_custom_target(run 
+    COMMAND qemu-system-i386 -boot d -m 512 -machine type=pc-i440fx-3.1 -serial mon:stdio -device piix3-ide,id=ide -drive id=disk,file=/dev/null,format=raw,if=none -device ide-hd,drive=disk,bus=ide.1 -device ide-cd,drive=cdrom -drive id=cdrom,file=os.iso,media=cdrom,if=none
+    DEPENDS os.iso)
 add_custom_target(debug COMMAND ../debug.sh DEPENDS os.iso)
 

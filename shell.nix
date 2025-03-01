@@ -6,5 +6,6 @@ in
     nativeBuildInputs = [ 
         pkgs.cdrkit
         pkgs.qemu
+        pkgs.xxd
     ];
 }

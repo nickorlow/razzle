@@ -1,13 +1,4 @@
-#pragma once
-
-#include "asm.c"
-
-enum eflags_t {
-  EFLAG_CARRY = 0x0001,
-  EFLAG_RES = 0x0002,
-  EFLAG_PARITY = 0x0004,
-  EFLAG_INTERRUPT = 0x0200
-};
+#include "scheduler.h"
 
 void initialize_registers(struct regs *new_regs, char *entrypoint,
                           uint32_t address_base, uint32_t address_space_size) {

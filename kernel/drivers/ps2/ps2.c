@@ -1,8 +1,6 @@
-#pragma once
+#include "./ps2.h"
 
-#include "./scheduler.c"
-#include "./vga.c"
-#include <stdint.h>
+struct ps2_waiter_t ps2_waiters[MAX_PROCESSES];
 
 enum key_code_t {
   backtick_tilde = 1,
@@ -63,7 +61,7 @@ enum key_code_t {
 
 struct key_event_t {
   enum key_code_t key;
-  uint8_t is_down;
+  uint8_t         is_down;
 };
 
 struct kb_state {
@@ -244,30 +242,22 @@ char keycode_to_char(enum key_code_t key_code) {
   return '\0';
 }
 
-
-struct ps2_waiter_t {
-    uint8_t alloc;
-    uint32_t pid;
-};
-
-struct ps2_waiter_t ps2_waiters[MAX_PROCESSES];
-
 void init_ps2() {
-    for(uint32_t i = 0; i < MAX_PROCESSES; i++) {
-        ps2_waiters[i].alloc = 0;
-    }
+  for (uint32_t i = 0; i < MAX_PROCESSES; i++) {
+    ps2_waiters[i].alloc = 0;
+  }
 }
 
 void handle_keypress_char(char c) {
-                if (c != '\0') {
-              for(uint32_t i = 0; i < MAX_PROCESSES; i++) {
-                  if(ps2_waiters[i].alloc) {
-                      process_table[ps2_waiters[i].pid].registers.eax = c;
-                      ps2_waiters[i].alloc = 0;
-                      process_table[ps2_waiters[i].pid].state = TASKSTATE_ready;
-                  }
-              }
-                }
+  if (c != '\0') {
+    for (uint32_t i = 0; i < MAX_PROCESSES; i++) {
+      if (ps2_waiters[i].alloc) {
+        process_table[ps2_waiters[i].pid].registers.eax = c;
+        ps2_waiters[i].alloc = 0;
+        process_table[ps2_waiters[i].pid].state = TASKSTATE_ready;
+      }
+    }
+  }
 }
 
 void handle_keypress(uint8_t char_code) {
@@ -296,11 +286,11 @@ void handle_keypress(uint8_t char_code) {
     break;
 
   default: {
-            if (event.is_down) {
-                char c = keycode_to_char(event.key);
-                handle_keypress_char(c);
-            }
-            break;
-           }
+    if (event.is_down) {
+      char c = keycode_to_char(event.key);
+      handle_keypress_char(c);
+    }
+    break;
+  }
   }
 }
